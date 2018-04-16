@@ -4,14 +4,23 @@ const fs = require('fs'); // necesitado para guardar/cargar unqfy
 const unqmod = require('./unqfy');
 
 function procesarParametros(parametros){
+  unqfy = getUNQfy("./estado.json");
   switch (parametros[0]){
     case "addArtist":
-      unqfy = getUNQfy("./estado");
       unqfy.addArtist(parametros[1],parametros[2]);
+    break;
+    case "addAlbum":
+      unqfy.addAlbum(parametros[1],parametros[2]);
+    break;
+    case "addTrack":
+      unqfy.addTrack(parametros[1],parametros[2],parametros[3]);
+    break;
+    case "addAlbum":
+      unqfy.addPlaylist(parametros[1],parametros[2],parametros[3]);
     break;
     default: 
   }
-  saveUNQfy(unqfy,"./estado");
+  saveUNQfy(unqfy,"./estado.json");
 }
 
 // Retorna una instancia de UNQfy. Si existe filename, recupera la instancia desde el archivo.

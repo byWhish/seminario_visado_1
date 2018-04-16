@@ -7,7 +7,9 @@ class PlayList{
     }
 
     duration(){
-        return this.maxDuration;
+        let a = 0; 
+        return this.tracks.map( track => track.duration ).
+                            reduce( function(a,b){ return a = a+b } );
     }
 
     hasTrack(aTrack){
