@@ -152,6 +152,7 @@ describe('Playlist Creation and properties', () => {
     const playlist = unqfy.getPlaylistByName('my playlist');
 
     assert.equal(playlist.name, 'my playlist');
+    assert.equal(playlist.tracks.length, 4)//;
     assert.isAtMost(playlist.duration(), 1400);
     assert.isTrue(playlist.hasTrack(t1));
     assert.isTrue(playlist.hasTrack(t2));

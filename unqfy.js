@@ -9,8 +9,6 @@ class UNQfy {
 
   constructor(){
     this.artists = [];
-    this.albums = [];
-    this.tracks = [];
     this.playLists = [];
   }
 
@@ -29,7 +27,7 @@ class UNQfy {
   }
 
   getTracksMatchingGenres(genres) {
-    return this.getTracks().filter( track => track.genres === genres );
+    return this.getTracks().filter( track => track.genres.some( genre => genres.includes(genre) ) );
   }
 
   getTracksMatchingArtist(artistName) {
@@ -59,8 +57,13 @@ class UNQfy {
   */
   addAlbum(artistName, params) {
     let aAlbum = new album.Album( params.name, params.year );
-    this.artists.find( artist => artist.name === artistName ).albums.push( aAlbum );
-    //this.albums.push( aAlbum );
+    let aArtist = this.getArtistByName(artistName);
+    if ( aArtist === undefined ){
+      console.log("No se econtro el Artista");
+    }else{
+      aArtist.albums.push( aAlbum );
+    }
+    //this.this.getArtistByName(artistName).albums.push( aAlbum );
     // El objeto album creado debe tener (al menos) las propiedades name (string) y year
   }
   /* Debe soportar (al menos):
@@ -70,7 +73,13 @@ class UNQfy {
   */
   addTrack(albumName, params) {
     let aTrack = new track.Track( params.name, params.duration, params.genres);
-    this.getAlbumByName(albumName).tracks.push( aTrack );
+    let aAlbum = this.getAlbumByName(albumName);
+    if ( aAlbum === undefined ){
+      console.log("No se econtro el Album");
+    }else{
+      aAlbum.tracks.push( aTrack );
+    }
+    //this.getAlbumByName(albumName).tracks.push( aTrack );
     /* El objeto track creado debe soportar (al menos) las propiedades:
          name (string),
          duration (number),
@@ -97,9 +106,10 @@ class UNQfy {
 
   addPlaylist(name, genresToInclude, maxDuration) {
     let aPlayList = new playlist.PlayList(name,genresToInclude,maxDuration);
-    //.filter( track => track.genres === genresToInclude );
-    let tracks = this.getTracks();
-    aPlayList.tracks = tracks;
+    
+    aPlayList.tracks = this.getTracks().filter(track => track.duration < maxDuration).
+                      filter( track => track.genres.some( genre => genresToInclude.includes(genre)));
+    
     this.playLists.push( aPlayList );
     /* El objeto playlist creado debe soportar (al menos):
       * una propiedad name (string)
@@ -116,7 +126,7 @@ class UNQfy {
   static load(filename = 'unqfy.json') {
     const fs = new picklejs.FileSerializer();
     // TODO: Agregar a la lista todas las clases que necesitan ser instanciadas
-    const classes = [UNQfy, Artist, Album, Track, PlayList];
+    const classes = [UNQfy, artist.Artist, album.Album, track.Track, playlist.PlayList];
     fs.registerClasses(...classes);
     return fs.load(filename);
   }
