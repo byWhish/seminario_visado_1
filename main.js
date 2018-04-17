@@ -7,16 +7,18 @@ function procesarParametros(parametros){
   unqfy = getUNQfy("./estado.json");
   switch (parametros[0]){
     case "addArtist":
-      unqfy.addArtist(parametros[1],parametros[2]);
+      unqfy.addArtist(JSON.parse(`{"name":"${parametros[1]}","country":"${parametros[2]}"}`));
     break;
     case "addAlbum":
-      unqfy.addAlbum(parametros[1],parametros[2]);
+      let artist = parametros.slice(1);
+      unqfy.addAlbum(artist, JSON.parse(`{"name":"${parametros[1]}","year":"${parametros[2]}"}`));
     break;
     case "addTrack":
-      unqfy.addTrack(parametros[1],parametros[2],parametros[3]);
+      let album = parametros.slice(1);
+      unqfy.addTrack(parametros);
     break;
-    case "addAlbum":
-      unqfy.addPlaylist(parametros[1],parametros[2],parametros[3]);
+    case "addPlaylist":
+      unqfy.addPlaylist(parametros);
     break;
     default: 
   }
@@ -44,7 +46,6 @@ function main() {
   //process.argv.forEach(argument => console.log(argument));
   let parametros = process.argv.slice(2);
   procesarParametros(parametros);
-  console.log(typeof(parametros[0])); 
 }
 
 main();
