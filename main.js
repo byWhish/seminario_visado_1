@@ -2,23 +2,25 @@
 
 const fs = require('fs'); // necesitado para guardar/cargar unqfy
 const unqmod = require('./unqfy');
-
+let generos
 function procesarParametros(parametros){
   unqfy = getUNQfy("./estado.json");
   switch (parametros[0]){
     case "addArtist":
-      unqfy.addArtist(JSON.parse(`{"name":"${parametros[1]}","country":"${parametros[2]}"}`));
+      unqfy.addArtist({name:parametros[1],country:parametros[2]});
     break;
     case "addAlbum":
-      let artist = parametros.slice(1);
-      unqfy.addAlbum(artist, JSON.parse(`{"name":"${parametros[1]}","year":"${parametros[2]}"}`));
+      let artist = parametros[1];
+      unqfy.addAlbum(artist, {name:parametros[2],year:parametros[3]});
     break;
     case "addTrack":
-      let album = parametros.slice(1);
-      unqfy.addTrack(parametros);
+      let album = parametros[1];
+      generos = [].push(parametros[4]);
+      unqfy.addTrack(album, {name:parametros[2],duration:parametros[3],genres:generos});
     break;
     case "addPlaylist":
-      unqfy.addPlaylist(parametros);
+      generos = [].push(parametros[2]);
+      unqfy.addPlaylist(parametros[1],generos,parametros[3]);
     break;
     default: 
   }

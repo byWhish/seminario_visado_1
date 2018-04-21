@@ -35,7 +35,7 @@ class UNQfy {
     //let albums = aArtist.albums;
     let a = [];
     //let tracks = albums.map( album => album.tracks ).reduce( function (a,b) { return a.concat(b) });      
-    return this.artists.find( artist => artist === artistName ).albums.
+    return this.getArtistByName(artistName.name).albums.
                         map( album => album.tracks ).
                         reduce( function (a,b) { return a.concat(b) });      
   }
@@ -105,10 +105,22 @@ class UNQfy {
   }
 
   addPlaylist(name, genresToInclude, maxDuration) {
+
     let aPlayList = new playlist.PlayList(name,genresToInclude,maxDuration);
     
-    aPlayList.tracks = this.getTracks().filter(track => track.duration < maxDuration).
-                      filter( track => track.genres.some( genre => genresToInclude.includes(genre)));
+    //filter(track => track.duration < maxDuration).
+
+
+    let tracks = [] 
+    this.getTracks().filter( track => track.genres.some( genre => genresToInclude.includes(genre))).
+                                    forEach(track => {
+                                                if ( track.duration <= maxDuration ){
+                                                    maxDuration = maxDuration - track.duration;
+                                                    tracks.push( track )
+                                                    }
+                                            });
+
+    aPlayList.tracks = tracks;
     
     this.playLists.push( aPlayList );
     /* El objeto playlist creado debe soportar (al menos):
