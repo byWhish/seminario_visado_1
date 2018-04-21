@@ -15,12 +15,10 @@ function procesarParametros(parametros){
     break;
     case "addTrack":
       let album = parametros[1];
-      generos = [].push(parametros[4]);
-      unqfy.addTrack(album, {name:parametros[2],duration:parametros[3],genres:generos});
+      unqfy.addTrack(album, {name:parametros[2],duration:parametros[3],genres:parametros[4]});
     break;
     case "addPlaylist":
-      generos = [].push(parametros[2]);
-      unqfy.addPlaylist(parametros[1],generos,parametros[3]);
+      unqfy.addPlaylist(parametros[1],parametros[2],parametros[3]);
     break;
     default: 
   }
