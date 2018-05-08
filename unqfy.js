@@ -27,17 +27,13 @@ class UNQfy {
   }
 
   getTracksMatchingGenres(genres) {
-    return this.getTracks().filter( track => track.genres.some( genre => genres.includes(genre) ) );
+    return this.getTracks().filter( track => track.includesGenres(genres) );
   }
 
   getTracksMatchingArtist(artistName) {
-    //let aArtist = this.artists.find( artist => artist === artistName )
-    //let albums = aArtist.albums;
     let a = [];
-    //let tracks = albums.map( album => album.tracks ).reduce( function (a,b) { return a.concat(b) });      
-    return this.getArtistByName(artistName.name).albums.
-                        map( album => album.tracks ).
-                        reduce( function (a,b) { return a.concat(b) });      
+    return this.getArtistByName(artistName.name).getTracks();
+                  
   }
 
 
@@ -63,7 +59,7 @@ class UNQfy {
     }else{
       aArtist.albums.push( aAlbum );
     }
-    //this.this.getArtistByName(artistName).albums.push( aAlbum );
+
     // El objeto album creado debe tener (al menos) las propiedades name (string) y year
   }
   /* Debe soportar (al menos):
@@ -79,7 +75,7 @@ class UNQfy {
     }else{
       aAlbum.tracks.push( aTrack );
     }
-    //this.getAlbumByName(albumName).tracks.push( aTrack );
+
     /* El objeto track creado debe soportar (al menos) las propiedades:
          name (string),
          duration (number),
@@ -92,7 +88,7 @@ class UNQfy {
   }
 
   getAlbumByName(name) {
-    //return this.albums;
+
     return this.getAlbums().find( album => album.name === name );
   }
 
@@ -107,9 +103,6 @@ class UNQfy {
   addPlaylist(name, genresToInclude, maxDuration) {
 
     let aPlayList = new playlist.PlayList(name,genresToInclude,maxDuration);
-    
-    //filter(track => track.duration < maxDuration).
-
 
     let tracks = [] 
     this.getTracks().filter( track => track.genres.some( genre => genresToInclude.includes(genre))).

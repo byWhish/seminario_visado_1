@@ -4,6 +4,10 @@ class Track{
         this.duration = duration;
         this.genres = genres;
     }
+
+    includesGenres( genres ){
+        return this.genres.some( genre => genres.includes(genre) )
+    }
 }
 
 module.exports = {

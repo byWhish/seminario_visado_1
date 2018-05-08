@@ -4,6 +4,10 @@ class Album{
         this.year = year;
         this.tracks = [];
     }
+
+    getTracks(){
+        return this.tracks
+    }
 }
 
 module.exports = {
