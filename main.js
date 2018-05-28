@@ -20,6 +20,9 @@ function procesarParametros(parametros){
     case "addPlaylist":
       unqfy.addPlaylist(parametros[1],parametros[2],parametros[3]);
     break;
+    case "populateAlbumsForArtist":
+    unqfy.populateAlbumsForArtist(parametros[1],parametros[2],parametros[3]);
+  break;
     default: 
   }
   saveUNQfy(unqfy,"./estado.json");

@@ -1,4 +1,3 @@
-
 const picklejs = require('picklejs');
 const artist = require('./artist');
 const album = require('./album');
@@ -10,6 +9,7 @@ class UNQfy {
   constructor(){
     this.artists = [];
     this.playLists = [];
+    this.lastArtistId = 1;
   }
 
   getAlbums(){
@@ -43,7 +43,9 @@ class UNQfy {
   */
   addArtist(params) {
     let aArtist = new artist.Artist( params.name, params.country );
+    aArtist.id = this.lastArtistId++;
     this.artists.push( aArtist );
+    return aArtist;
     // El objeto artista creado debe soportar (al menos) las propiedades name (string) y country (string)
   }
 
@@ -85,6 +87,28 @@ class UNQfy {
 
   getArtistByName(name) {
     return this.artists.find( artist => artist.name === name );
+  }
+
+  getArtistById(id){
+    let artistFound = this.artists.find( artist => artist.id == id );
+    if ( artistFound )
+      {  
+        return artistFound;
+      }else{
+        throw ('Artista no encontrado');
+      };
+  }
+
+  getArtistByName(name){
+    let artistsFound = this.artist.filter( artist => artist.name.includes(name)) 
+  }
+
+  deleteArtistById(id){
+    this.artists = this.artists.filter( artist => artist.id != id )
+  }
+
+  getAlbumsFByArtist(artistName) {
+    this.artists.find( artist => artist.name === name.getAlbums);
   }
 
   getAlbumByName(name) {
