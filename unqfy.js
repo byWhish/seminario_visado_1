@@ -10,6 +10,7 @@ class UNQfy {
     this.artists = [];
     this.playLists = [];
     this.lastArtistId = 1;
+    this.lasAlbumId = 1;
   }
 
   getAlbums(){
@@ -55,13 +56,14 @@ class UNQfy {
   */
   addAlbum(artistName, params) {
     let aAlbum = new album.Album( params.name, params.year );
+    aAlbum.id = this.lasAlbumId++
     let aArtist = this.getArtistByName(artistName);
     if ( aArtist === undefined ){
       console.log("No se econtro el Artista");
     }else{
       aArtist.albums.push( aAlbum );
     }
-
+    return aAlbum
     // El objeto album creado debe tener (al menos) las propiedades name (string) y year
   }
   /* Debe soportar (al menos):
@@ -99,20 +101,27 @@ class UNQfy {
       };
   }
 
-  getArtistByName(name){
-    let artistsFound = this.artist.filter( artist => artist.name.includes(name)) 
+  getArtistsByName(name){
+    return this.artist.filter( artist => artist.name.includes(name)) 
   }
 
   deleteArtistById(id){
     this.artists = this.artists.filter( artist => artist.id != id )
   }
 
-  getAlbumsFByArtist(artistName) {
-    this.artists.find( artist => artist.name === name.getAlbums);
+  getAlbumsByArtist(artistName) {
+    return this.artists.find( artist => artist.name === name.getAlbums);
   }
 
-  getAlbumByName(name) {
+  getAlbumById(id) {
+    return this.getAlbums().find( album => album.id === id )
+  }
 
+  getAlbumsByName(name){
+    return this.getAlbums().filter( album => album.name.includes(name)) 
+  }
+  
+  getAlbumByName(name) {
     return this.getAlbums().find( album => album.name === name );
   }
 
