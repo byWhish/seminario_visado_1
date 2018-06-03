@@ -1,4 +1,5 @@
 const request = require('request-promise');
+const album = require('./album');
 
 class Requester{
 
@@ -9,7 +10,7 @@ class Requester{
         this.apiKey = '6c6e31a005105f654a01249c588c2d26'
     }
 
-    requestAlbumsByArtistId( aTrack, id ){
+    requestAlbumsByArtistId( aArtist, id ){
         let options = {
             url: this.urlSpotifyV1+'artists/'+id+'/albums',
             headers: { Authorization: 'Bearer ' + this.token },
@@ -17,12 +18,11 @@ class Requester{
         }
 
         request.get(options).then((response)=>{
-            aArtist.albums = response.items.map( album => album.name );
-            console.log(response.items.map( album => album.name ));
+            aArtist.albums = response.items.map( album => new album.Album(album.name, album.release_date ));
         });
     }
 
-    requestAlbumsByArtistName( aTrack ){
+    requestAlbumsByArtistName( aArtist ){
         
         let options = {
             url: this.urlSpotifyV1+'search',
@@ -31,7 +31,7 @@ class Requester{
             qs: {
                 limit: 10,
                 type: 'artist',
-                q: aTrack.name
+                q: aArtist.name
               }
         }
 
@@ -50,7 +50,7 @@ class Requester{
 
         request.get(options).then((response)=>{
             aTrack.lyrics = response.message.body.lyrics.lyrics_body;
-            console.log(response.message.body.lyrics.lyrics_body);
+            //console.log(response.message.body.lyrics.lyrics_body);
         });
     }
 

@@ -14,7 +14,13 @@ class Track{
 
     getLyrics(){
         let req = new requester.Requester();
-        this.lyrics?console.log(this.lyrics):req.requestLyricsByTrackName( this );
+        //si tiene
+        if ( this.lyricsreturn ) {
+            return this.lyrics
+        }else{
+            req.requestLyricsByTrackName( this );
+            return "recuperando lyrics intentelo mas tarde"
+        }
     }
 }
 

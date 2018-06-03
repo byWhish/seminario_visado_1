@@ -1,3 +1,5 @@
+const requester = require('./requester');
+
 class Artist{
     
     constructor( name, country ){
@@ -10,13 +12,19 @@ class Artist{
     getTracks(){
         let a = []
         return this.albums.map( album => album.getTracks()).
-                            reduce( function (a,b) { return a.concat(b) });
+                            reduce( function (a,b) { return a.concat(b) }, []);
     }
 
     getAlbums(){
+        let req = new requester.Requester();
         let titles = []
         //devuelvo una lista de titulos de albunes
-        return this.albums.map( album => album.title() );
+        if ( !this.albums.length ){
+            return this.albums.map( album => album.title() );
+        } else {
+            this.albums = req.requestAlbumsByArtistName(this.name)
+        }
+        
     }
 
 }

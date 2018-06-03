@@ -3,6 +3,7 @@ const artist = require('./artist');
 const album = require('./album');
 const track = require('./track');
 const playlist = require('./playlist');
+const modelExep = require('./ModelException');
 
 class UNQfy {
 
@@ -15,16 +16,14 @@ class UNQfy {
 
   getAlbums(){
     let a = [];
-    return this.artists.
-              map( artist => artist.albums ).
-              reduce( function (a,b) { return a.concat(b) });
+    return this.artists.map( artist => artist.albums )
+                          .reduce( (a,b) => a.concat(b), [] );
   }
 
   getTracks(){
     let a = [];
-    return this.getAlbums().
-              map( album => album.tracks ).
-              reduce( function (a,b) { return a.concat(b) });
+    return this.getAlbums().map( album => album.tracks )
+                            .reduce( (a,b) => a.concat(b), [] );
   }
 
   getTracksMatchingGenres(genres) {
@@ -32,17 +31,17 @@ class UNQfy {
   }
 
   getTracksMatchingArtist(artistName) {
-    let a = [];
     return this.getArtistByName(artistName.name).getTracks();
-                  
   }
-
-
+  
   /* Debe soportar al menos:
      params.name (string)
      params.country (string)
   */
   addArtist(params) {
+    if ( this.artists.find( artist => artist.name === params.name && artist.country === params.country ) ){
+      throw new modelExep.DuplicatedException('Artista duplicado');
+    }
     let aArtist = new artist.Artist( params.name, params.country );
     aArtist.id = this.lastArtistId++;
     this.artists.push( aArtist );
@@ -55,15 +54,15 @@ class UNQfy {
       params.year (number)
   */
   addAlbum(artistName, params) {
+    if ( this.getAlbums().find( album => album.name === params.name && album.year === params.year ) ){
+      throw new modelExep.DuplicatedException( "album duplicado" )  
+    }
     let aAlbum = new album.Album( params.name, params.year );
     aAlbum.id = this.lasAlbumId++
     let aArtist = this.getArtistByName(artistName);
-    if ( aArtist === undefined ){
-      console.log("No se econtro el Artista");
-    }else{
-      aArtist.albums.push( aAlbum );
-    }
-    return aAlbum
+    //si no existe el artista lanzo una excepcion
+    aArtist.albums.push( aAlbum );
+    return aAlbum;
     // El objeto album creado debe tener (al menos) las propiedades name (string) y year
   }
   /* Debe soportar (al menos):
@@ -74,12 +73,7 @@ class UNQfy {
   addTrack(albumName, params) {
     let aTrack = new track.Track( params.name, params.duration, params.genres);
     let aAlbum = this.getAlbumByName(albumName);
-    if ( aAlbum === undefined ){
-      console.log("No se econtro el Album");
-    }else{
-      aAlbum.tracks.push( aTrack );
-    }
-
+    aAlbum.tracks.push( aTrack );
     /* El objeto track creado debe soportar (al menos) las propiedades:
          name (string),
          duration (number),
@@ -88,45 +82,64 @@ class UNQfy {
   }
 
   getArtistByName(name) {
-    return this.artists.find( artist => artist.name === name );
+    let artistFound = this.artists.find( artist => artist.name === name );
+    if ( !artistFound ){ throw new modelExep.NotFoundException('Artista no encontrado') }
+    return artistFound;
   }
 
+  //busca un artista por id
   getArtistById(id){
     let artistFound = this.artists.find( artist => artist.id == id );
-    if ( artistFound )
-      {  
-        return artistFound;
-      }else{
-        throw ('Artista no encontrado');
-      };
+    if ( !artistFound ){ throw new modelExep.NotFoundRelException('Artista no encontrado') }  
+    return artistFound;
   }
 
+  //busca todos los artistas que incluyan la palabra
   getArtistsByName(name){
-    return this.artist.filter( artist => artist.name.includes(name)) 
+    return this.artists.filter( artist => artist.name.toUpperCase().includes(name.toUpperCase()));
   }
 
   deleteArtistById(id){
-    this.artists = this.artists.filter( artist => artist.id != id )
+    this.getArtistById(id);
+    this.artists = this.artists.filter( artist => artist.id != id );
   }
 
   getAlbumsByArtist(artistName) {
-    return this.artists.find( artist => artist.name === name.getAlbums);
+    let artist = this.getArtistByName( artistName )
+    let albumsFound = artist.getAlbums();
   }
 
   getAlbumById(id) {
-    return this.getAlbums().find( album => album.id === id )
+    let albumFound = this.getAlbums().find( album => album.id == id )
+    if (!albumFound){ throw new modelExep.NotFoundException('Album no encontrado')}
+    return albumFound
   }
 
   getAlbumsByName(name){
-    return this.getAlbums().filter( album => album.name.includes(name)) 
+    let albumsFound =  this.getAlbums().filter( album => album.name.toUpperCase().includes(name.toUpperCase())) 
+    return albumsFound
   }
   
   getAlbumByName(name) {
-    return this.getAlbums().find( album => album.name === name );
+    let album = this.getAlbums().find( album => album.name === name );
+    if (!album){ throw new modelExep.NotFoundException('Album no encontrado')}
+    return album
+  }
+
+  deleteAlbumById(id) {
+    let albumFound = this.getAlbumById(id)
+    let artistFound = this.artists.find( artist => artist.albums.includes(albumFound) );
+    artistFound.albums = artistFound.albums.filter( album => album !== albumFound ); 
+  }
+
+  getArtistByAlbum(aAlbum) {
+    return this.artists.find( artist => artist.getAlbums().contains(aAlbum) )
   }
 
   getTrackByName(name) {
-    return this.getTracks().find( track => track.name === name );
+    let track = this.getTracks().find( track => track.name === name );
+    if (!track){ throw new modelExep.NotFoundException('Track no encontrado')}
+    return track
   }
 
   getPlaylistByName(name) {
