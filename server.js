@@ -49,12 +49,28 @@ function modelErrorToApiError( error ){
     } else if ( error instanceof modelError.NotFoundRelException ){
         return new apiError.NotFoundRelRes
     } else {
-        return new apiError.InvalidUrl
+        return new apiError.ServerError
     }
 }
 
 router.route('/lyrics/').get( (req, res, next) => {
-
+    try{
+        if ( req.query.name ){
+            let trackFound = unqfyInst.getTrackByName(req.query.name);
+            let lyrics = trackFound.getLyrics()
+            if (!lyrics){
+                res.status(200)
+                res.json({lyrics: lyrics})
+            }else{
+                next( new apiError.NotFoundRes );
+            }
+        }else{
+            next( new apiError.BadRequest )   
+        }
+    }catch(error){
+        console.log(error)
+        next( modelErrorToApiError(error) );
+    }
 });
 
 router.route('/artists').post( (req, res, next) => {
@@ -123,6 +139,7 @@ router.route('/albums').post(function (req, res, next) {
             next( new apiError.BadRequest)
         }
     }catch(error){
+        console.log(error)
         next( modelErrorToApiError(error) )
     }
 })
@@ -137,6 +154,7 @@ router.route('/albums').get(function (req, res, next) {
         }
         res.status(200);
         res.json(albumsFound);
+            
     }catch(error){
         next( modelErrorToApiError(error) )
     }

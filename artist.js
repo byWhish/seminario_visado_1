@@ -19,12 +19,10 @@ class Artist{
         let req = new requester.Requester();
         let titles = []
         //devuelvo una lista de titulos de albunes
-        if ( !this.albums.length ){
-            return this.albums.map( album => album.title() );
-        } else {
-            this.albums = req.requestAlbumsByArtistName(this.name)
-        }
-        
+        /*if ( this.albums.length == 0){ 
+            req.requestAlbumsByArtistName(this) 
+        }*/
+        return this.albums//.map( album => album.name )
     }
 
 }

@@ -1,12 +1,13 @@
 const request = require('request-promise');
 const album = require('./album');
+const modelExep = require('./ModelException');
 
 class Requester{
 
     constructor(){
         this.urlSpotifyV1 = "https://api.spotify.com/v1/"
         this.urlMusixMatch = "http://api.musixmatch.com/ws/1.1/"
-        this.token = 'BQCTOPjO3KIZb8cFGRybJh62d-1y6aKV-u1ZnIGoX01gj2hzz70ZRcj5iIAO4WMtPYsxo569LQ5siMarBIcFzaTFzTYOQfxxq8er-yUIgO12rRTG23fx6Goaiw93dBfmZTywlyiN1sP3lrChW1DzVp5j6c12k0CsKZtJOHdJ31yKqxtpLs6Q3g'
+        this.token = 'BQB9gE3bfIBUq8BbZ8XRreaXEFLFUhk3TVdOgfHRmGTFDELU0luUU3_NuUwvUneb5BtjssEhNfFLCKrxuyZr-OVfk8gPGjLao39VHb_0-aow7iud3zPbB0y5Rw0O2wlaBPJ0MmD-bpwaNrzNdtz3Nfb7IdyjDIcVdZ5FEpqoQCeh0MRFHF2SwA'
         this.apiKey = '6c6e31a005105f654a01249c588c2d26'
     }
 
@@ -18,7 +19,11 @@ class Requester{
         }
 
         request.get(options).then((response)=>{
-            aArtist.albums = response.items.map( album => new album.Album(album.name, album.release_date ));
+            if (response.items.length != 0){
+                aArtist.albums = response.items.map( aAlbum => new album.Album(aAlbum.name, aAlbum.release_date ));
+            }else{
+                throw new modelExep.NotFoundException('No se encontraron albums')
+            }    
         });
     }
 
@@ -39,7 +44,7 @@ class Requester{
                 .then((response)=>{
                     return response.artists.items[0].id;
                     })
-                .then((respuesta)=>{this.requestAlbumsByArtistId ( id )});
+                .then((respuesta)=>{this.requestAlbumsByArtistId ( aArtist, respuesta )});
     }
 
     requestLyricsByTrackId( aTrack, id ){
@@ -50,7 +55,7 @@ class Requester{
 
         request.get(options).then((response)=>{
             aTrack.lyrics = response.message.body.lyrics.lyrics_body;
-            //console.log(response.message.body.lyrics.lyrics_body);
+            console.log(response.message.body.lyrics.lyrics_body);
         });
     }
 
@@ -73,3 +78,4 @@ class Requester{
 module.exports = {
     Requester,
   };
+

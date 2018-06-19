@@ -16,7 +16,7 @@ class UNQfy {
 
   getAlbums(){
     let a = [];
-    return this.artists.map( artist => artist.albums )
+    return this.artists.map( artista => artista.getAlbums() )
                           .reduce( (a,b) => a.concat(b), [] );
   }
 
