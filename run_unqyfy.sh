@@ -1,0 +1,1 @@
+docker run --net unqyfynet --ip 172.20.0.22 -p 5001:9000 --name unqfydock --user node unqfyimg
