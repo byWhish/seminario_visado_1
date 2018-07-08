@@ -4,6 +4,7 @@ const album = require('./album');
 const track = require('./track');
 const playlist = require('./playlist');
 const modelExep = require('./ModelException');
+const notificador = require('./Notificador'); 
 
 class UNQfy {
 
@@ -12,6 +13,7 @@ class UNQfy {
     this.playLists = [];
     this.lastArtistId = 1;
     this.lasAlbumId = 1;
+    this.notificador = new notificador.Notificador()
   }
 
   getAlbums(){
@@ -62,6 +64,7 @@ class UNQfy {
     let aArtist = this.getArtistByName(artistName);
     //si no existe el artista lanzo una excepcion
     aArtist.albums.push( aAlbum );
+    this.notificador.notificarNuevoAlbum(aArtist, aAlbum)
     return aAlbum;
     // El objeto album creado debe tener (al menos) las propiedades name (string) y year
   }
@@ -102,6 +105,7 @@ class UNQfy {
   deleteArtistById(id){
     this.getArtistById(id);
     this.artists = this.artists.filter( artist => artist.id != id );
+    this.notificador.notificarArtistaBorrado(id)
   }
 
   getAlbumsByArtist(artistName) {

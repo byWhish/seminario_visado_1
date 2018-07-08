@@ -5,10 +5,31 @@ const modelExep = require('./ModelException');
 class Requester{
 
     constructor(){
+        this.urlNotifications = "http://localHost:8000/api/"
         this.urlSpotifyV1 = "https://api.spotify.com/v1/"
         this.urlMusixMatch = "http://api.musixmatch.com/ws/1.1/"
         this.token = 'BQB9gE3bfIBUq8BbZ8XRreaXEFLFUhk3TVdOgfHRmGTFDELU0luUU3_NuUwvUneb5BtjssEhNfFLCKrxuyZr-OVfk8gPGjLao39VHb_0-aow7iud3zPbB0y5Rw0O2wlaBPJ0MmD-bpwaNrzNdtz3Nfb7IdyjDIcVdZ5FEpqoQCeh0MRFHF2SwA'
         this.apiKey = '6c6e31a005105f654a01249c588c2d26'
+    }
+
+    requestNuevoAlbum( notificacion ){
+        let options = {
+            url: this.urlNotifications + 'notify/',
+            json: true,
+            body: notificacion
+        }
+
+        request.post(options).catch( (error) => console.log(error) )
+    }
+
+    requestBorrarSubscripcion( artistaId ){
+        let options = {
+            url: this.urlNotifications + 'subscriptions/',
+            json: true,
+            body: {artistaId: artistaId}
+        }
+
+        request.delete(options).catch( (error) => console.log(error) )
     }
 
     requestAlbumsByArtistId( aArtist, id ){
