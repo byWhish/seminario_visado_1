@@ -5,7 +5,7 @@ const modelExep = require('./ModelException');
 class Requester{
 
     constructor(){
-        this.urlNotifications = "http://localHost:8000/api/"
+        this.urlNotifications = "http://172.20.0.21:5000/api/"
         this.urlSpotifyV1 = "https://api.spotify.com/v1/"
         this.urlMusixMatch = "http://api.musixmatch.com/ws/1.1/"
         this.token = 'BQB9gE3bfIBUq8BbZ8XRreaXEFLFUhk3TVdOgfHRmGTFDELU0luUU3_NuUwvUneb5BtjssEhNfFLCKrxuyZr-OVfk8gPGjLao39VHb_0-aow7iud3zPbB0y5Rw0O2wlaBPJ0MmD-bpwaNrzNdtz3Nfb7IdyjDIcVdZ5FEpqoQCeh0MRFHF2SwA'

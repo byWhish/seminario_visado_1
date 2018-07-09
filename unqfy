@@ -16,8 +16,8 @@ COPY package-lock.json /home/node/unqfy/
 # Ejecuta npm install. Esto produce que se instalen todas las dependencias necearias para correr la aplicación
 RUN ["npm", "install"]
 
-# Expone el puerto 5000 donde corre la aplicación
-EXPOSE 9000
+# Expone el puerto 5001 donde corre la aplicación
+EXPOSE 5001 
 
 # Copia los fuentes dentro del container
 COPY album.js /home/node/unqfy/
